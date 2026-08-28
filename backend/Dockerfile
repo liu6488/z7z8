@@ -1,8 +1,10 @@
 # Dependencies Stage
+# 注意：必须用 schema.docker.prisma（postgresql provider）生成 Client，
+# 否则运行时连接 postgres:// 会报 "the URL must start with file://"
 FROM node:22-alpine AS deps
 WORKDIR /app
-COPY package*.json prisma/schema.prisma ./
-RUN npm ci && npx prisma generate
+COPY package*.json prisma/schema.docker.prisma ./
+RUN npm ci && npx prisma generate --schema schema.docker.prisma
 
 # Build Stage
 FROM node:22-alpine AS builder

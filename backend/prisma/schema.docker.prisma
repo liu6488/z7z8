@@ -1,0 +1,26 @@
+// Docker/生产环境使用的 PostgreSQL 版 schema。
+// 为什么单独一份：本地开发用 SQLite（schema.prisma），Docker 里连接的是 PostgreSQL，
+// 而 Prisma 的 provider 在 generate 时就被编译进 Client，必须与 DATABASE_URL 匹配。
+// 模型字段与 schema.prisma 保持一致，改字段时两份都要改。
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  excerpt   String?
+  tags      String   @default("") // 逗号分隔
+  status    String   @default("published") // draft | published
+  views     Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("posts")
+}

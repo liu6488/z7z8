@@ -1,56 +1,57 @@
 <script setup lang="ts">
 import type { PostListItem } from '@/api/posts'
 import { formatDate, parseTags } from '@/composables/useMarkdown'
-import { PhEye, PhPencil, PhTrash, PhCaretRight } from '@phosphor-icons/vue'
+import { PhCaretRight, PhEye } from '@phosphor-icons/vue'
 
 defineProps<{ post: PostListItem }>()
 </script>
 
 <template>
-  <article
-    class="group rounded-2xl border border-zinc-200 bg-white p-5 transition-all hover:border-indigo-300 hover:shadow-md dark:border-zinc-800 dark:hover:border-indigo-700"
-  >
-    <div class="mb-2 flex items-center gap-3 text-xs text-zinc-400">
+  <article class="group flex flex-col gap-2.5 py-7 transition-colors duration-300 hover:bg-zinc-100/60 dark:hover:bg-zinc-900/40">
+    <!-- 元数据行 -->
+    <div class="flex items-center gap-3 text-xs text-zinc-400 dark:text-zinc-500">
       <span
-        class="rounded-full px-2.5 py-0.5 font-medium"
-        :class="post.status === 'published' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'"
+        class="badge"
+        :class="post.status === 'published' ? 'badge-published' : 'badge-draft'"
       >
         {{ post.status === 'published' ? '已发布' : '草稿' }}
       </span>
-      <span>{{ formatDate(post.createdAt) }}</span>
-      <span class="flex items-center gap-1">
-        <PhEye size={12} weight="fill" />
+      <span class="tabular-nums">{{ formatDate(post.createdAt) }}</span>
+      <span class="flex items-center gap-1 tabular-nums">
+        <PhEye :size="12" weight="fill" />
         {{ post.views }}
       </span>
     </div>
 
+    <!-- 标题 + 摘要 -->
     <router-link :to="`/posts/${post.id}`" class="block">
-      <h2 class="mb-1.5 text-lg font-semibold tracking-tight text-zinc-900 group-hover:text-indigo-600 dark:text-zinc-100">
+      <h2 class="mb-1.5 text-xl font-semibold tracking-tight text-zinc-900 transition-colors duration-300 group-hover:text-orange-700 dark:text-zinc-100 dark:group-hover:text-orange-400">
         {{ post.title }}
       </h2>
-      <p class="mb-3 text-sm leading-6 text-zinc-500">
+      <p class="line-clamp-2 text-sm leading-6 text-zinc-500 dark:text-zinc-400">
         {{ post.excerpt || '（无摘要）' }}
       </p>
     </router-link>
 
-    <div class="flex items-center justify-between pt-2">
+    <!-- 标签 + 操作 -->
+    <div class="mt-1 flex items-center justify-between gap-4">
       <div class="flex flex-wrap gap-1.5">
         <span
           v-for="tag in parseTags(post.tags)"
           :key="tag"
-          class="rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+          class="tag"
         >
           {{ tag }}
         </span>
       </div>
-      <div class="flex items-center gap-3">
+      <div class="flex shrink-0 items-center gap-4">
         <slot name="actions" />
         <router-link
           :to="`/posts/${post.id}`"
-          class="flex items-center gap-1 text-xs font-medium text-indigo-600 transition-colors hover:text-indigo-800"
+          class="flex items-center gap-1 text-sm font-medium text-zinc-400 transition-colors duration-300 group-hover:text-orange-700 dark:text-zinc-500 dark:group-hover:text-orange-400"
         >
-          阅读全文
-          <PhCaretRight size={14} weight="bold" />
+          阅读
+          <PhCaretRight :size="15" weight="bold" class="arrow-slide" />
         </router-link>
       </div>
     </div>

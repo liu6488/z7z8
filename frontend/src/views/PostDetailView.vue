@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { postsApi, type PostDetail } from '@/api/posts'
 import { renderMarkdown } from '@/composables/useMarkdown'
-import { PhCaretLeft, PhClock, PhPencil, PhEye } from '@phosphor-icons/vue'
+import { PhArrowLeft, PhClock, PhPenNib, PhEye } from '@phosphor-icons/vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -35,74 +35,94 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="loading" class="py-20 text-center text-zinc-400">
-    <PhClock size={48} weight="light" class="mx-auto mb-4 text-zinc-300" />
-    <p>加载中…</p>
+  <div v-if="loading" class="mx-auto max-w-3xl py-16">
+    <div class="skeleton mb-6 h-4 w-40" />
+    <div class="skeleton mb-4 h-12 w-3/4" />
+    <div class="skeleton mb-10 h-4 w-52" />
+    <div class="space-y-3">
+      <div class="skeleton h-4 w-full" />
+      <div class="skeleton h-4 w-full" />
+      <div class="skeleton h-4 w-11/12" />
+      <div class="skeleton h-4 w-4/5" />
+    </div>
   </div>
 
-  <div v-else-if="error" class="py-20 text-center">
-    <p class="mb-6 text-zinc-500">{{ error }}</p>
+  <div v-else-if="error" class="mx-auto max-w-3xl py-24 text-center">
+    <p class="mb-6 text-zinc-500 dark:text-zinc-400">{{ error }}</p>
     <button
-      class="flex items-center gap-1 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-indigo-700 active:scale-[0.97]"
+      class="btn btn-primary px-6"
       @click="router.push('/')"
     >
-      <PhCaretLeft size={18} weight="bold" />
+      <PhArrowLeft :size="16" weight="bold" />
       返回首页
     </button>
   </div>
 
   <article v-else-if="post" class="mx-auto max-w-3xl">
+    <!-- 返回 -->
+    <div class="mb-10">
+      <button
+        class="btn btn-ghost -ml-2 h-9 px-3 text-sm"
+        @click="router.push('/')"
+      >
+        <PhArrowLeft :size="16" weight="bold" />
+        返回列表
+      </button>
+    </div>
+
     <!-- 文章头部 -->
-    <header class="mb-10">
-      <div class="mb-4 flex items-center gap-3 text-xs text-zinc-400">
+    <header class="rise-in mb-12">
+      <div class="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-zinc-400 dark:text-zinc-500">
         <span
-          class="rounded-full px-3 py-1 font-medium"
-          :class="post.status === 'published' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'"
+          class="badge"
+          :class="post.status === 'published' ? 'badge-published' : 'badge-draft'"
         >
           {{ post.status === 'published' ? '已发布' : '草稿' }}
         </span>
-        <span class="flex items-center gap-1">
-          <PhEye size={14} weight="fill" />
+        <span class="flex items-center gap-1.5 tabular-nums">
+          <PhEye :size="13" weight="fill" />
           {{ post.views }} 次阅读
         </span>
-        <span class="flex items-center gap-1">
-          <PhClock size={14} weight="fill" />
+        <span class="flex items-center gap-1.5 tabular-nums">
+          <PhClock :size="13" weight="fill" />
           {{ formattedDate }}
         </span>
       </div>
-      <h1 class="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+
+      <h1 class="text-3xl font-semibold leading-[1.15] tracking-tighter text-zinc-900 md:text-5xl dark:text-zinc-50">
         {{ post.title }}
       </h1>
-      <div class="mt-5 flex items-center justify-between">
+
+      <div class="mt-6 flex flex-wrap items-center justify-between gap-4 border-y border-zinc-200 py-4 dark:border-zinc-800">
         <div class="flex flex-wrap gap-2">
           <span
             v-for="tag in post.tags.split(',').filter(Boolean)"
             :key="tag"
-            class="rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+            class="tag"
           >
             {{ tag }}
           </span>
         </div>
         <button
-          class="flex items-center gap-1 text-sm text-zinc-400 transition-colors hover:text-indigo-600"
+          class="btn btn-secondary h-9 px-3.5 text-xs"
           @click="router.push(`/posts/${post.id}/edit`)"
         >
-          <PhPencil size={16} weight="bold" />
+          <PhPenNib :size="14" weight="bold" />
           编辑
         </button>
       </div>
     </header>
 
     <!-- 文章正文 -->
-    <div class="markdown-body" v-html="renderedContent"></div>
+    <div class="markdown-body rise-in" style="animation-delay: 120ms" v-html="renderedContent"></div>
 
-    <!-- 底部导航 -->
-    <footer class="mt-12 border-t border-zinc-200 pt-8 dark:border-zinc-800">
+    <!-- 底部返回 -->
+    <footer class="mt-14 border-t border-zinc-200 pt-8 dark:border-zinc-800">
       <button
-        class="flex items-center gap-1 text-indigo-600 transition-colors hover:underline dark:text-indigo-400"
+        class="btn btn-ghost -ml-2 px-3 text-sm text-zinc-500 dark:text-zinc-400"
         @click="router.push('/')"
       >
-        <PhCaretLeft size={18} weight="bold" />
+        <PhArrowLeft :size="16" weight="bold" />
         返回文章列表
       </button>
     </footer>

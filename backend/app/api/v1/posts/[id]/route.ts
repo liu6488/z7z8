@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
+import { prisma, dbReady } from '@/lib/db'
 import { updatePostSchema } from '@/lib/validators'
 
 type Ctx = { params: { id: string } }
 
 // GET /api/v1/posts/:id —— 文章详情（预览页数据源，附带阅读数自增）
 export async function GET(_req: NextRequest, { params }: Ctx) {
+  await dbReady // 确保 PostgreSQL 表结构已就绪（幂等）
   const post = await prisma.post.findUnique({ where: { id: params.id } })
   if (!post) {
     return NextResponse.json({ error: '文章不存在' }, { status: 404 })

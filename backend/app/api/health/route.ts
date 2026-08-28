@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
+import { prisma, dbReady } from '@/lib/db'
 
 const REDIS_ENABLED = process.env.REDIS_ENABLED !== 'false'
 
@@ -34,6 +34,7 @@ export async function GET() {
   }
 
   try {
+    await dbReady // 幂等建表（postgres）——失败则本路由返回 503
     await prisma.$queryRaw`SELECT 1`
     checks.database = true
   } catch (e) {

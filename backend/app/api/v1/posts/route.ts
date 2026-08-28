@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/db'
+import { prisma, dbReady } from '@/lib/db'
 import { createPostSchema, listQuerySchema } from '@/lib/validators'
 
 // GET /api/v1/posts?page=1&pageSize=10&keyword=&status=all&tag=
@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: parsed.error.errors }, { status: 400 })
   }
   const { page, pageSize, keyword, status, tag } = parsed.data
+  await dbReady // 确保 PostgreSQL 表结构已就绪（幂等）
 
   const where: Record<string, unknown> = {}
   if (status === 'draft' || status === 'published') {
@@ -64,6 +65,7 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.errors }, { status: 400 })
   }
+  await dbReady // 确保 PostgreSQL 表结构已就绪（幂等）
 
   const data = {
     ...parsed.data,

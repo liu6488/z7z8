@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { postsApi, type PostDetail } from '@/api/posts'
 import { renderMarkdown } from '@/composables/useMarkdown'
-import { IconCaretLeft, IconClock, IconPencil, IconEye } from '@phosphor-icons/vue'
+import { PhCaretLeft, PhClock, PhPencil, PhEye } from '@phosphor-icons/vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -36,7 +36,7 @@ onMounted(async () => {
 
 <template>
   <div v-if="loading" class="py-20 text-center text-zinc-400">
-    <IconClock size={48} weight="light" class="mx-auto mb-4 text-zinc-300" />
+    <PhClock size={48} weight="light" class="mx-auto mb-4 text-zinc-300" />
     <p>加载中…</p>
   </div>
 
@@ -46,7 +46,7 @@ onMounted(async () => {
       class="flex items-center gap-1 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-indigo-700 active:scale-[0.97]"
       @click="router.push('/')"
     >
-      <IconCaretLeft size={18} weight="bold" />
+      <PhCaretLeft size={18} weight="bold" />
       返回首页
     </button>
   </div>
@@ -62,11 +62,11 @@ onMounted(async () => {
           {{ post.status === 'published' ? '已发布' : '草稿' }}
         </span>
         <span class="flex items-center gap-1">
-          <IconEye size={14} weight="fill" />
+          <PhEye size={14} weight="fill" />
           {{ post.views }} 次阅读
         </span>
         <span class="flex items-center gap-1">
-          <IconClock size={14} weight="fill" />
+          <PhClock size={14} weight="fill" />
           {{ formattedDate }}
         </span>
       </div>
@@ -87,7 +87,7 @@ onMounted(async () => {
           class="flex items-center gap-1 text-sm text-zinc-400 transition-colors hover:text-indigo-600"
           @click="router.push(`/posts/${post.id}/edit`)"
         >
-          <IconPencil size={16} weight="bold" />
+          <PhPencil size={16} weight="bold" />
           编辑
         </button>
       </div>
@@ -102,7 +102,7 @@ onMounted(async () => {
         class="flex items-center gap-1 text-indigo-600 transition-colors hover:underline dark:text-indigo-400"
         @click="router.push('/')"
       >
-        <IconCaretLeft size={18} weight="bold" />
+        <PhCaretLeft size={18} weight="bold" />
         返回文章列表
       </button>
     </footer>

@@ -1,35 +1,16 @@
-@import 'tailwindcss';
-
-@theme {
-  --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, menlo, monospace;
-  --color-primary: #4f46e5;
-  --color-primary-dark: #4338ca;
-  --color-bg-subtle: #fafaf9;
-  --color-border-subtle: #e7e5e4;
-  --color-text-secondary: #78716c;
-  --color-status-published: #059669;
-  --color-status-draft: #d97706;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer base {
   html {
     scroll-behavior: smooth;
   }
-  
+
   body {
-    font-family: var(--font-sans);
+    font-family: Geist, ui-sans-serif, system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* 暗色模式变量 */
-  :root.dark {
-    --color-bg-subtle: #0c0a09;
-    --color-border-subtle: #292524;
-    --color-text-secondary: #a8a29e;
-    --color-status-published: #34d399;
-    --color-status-draft: #fbbf24;
   }
 }
 

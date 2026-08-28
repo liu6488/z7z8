@@ -5,7 +5,7 @@ import { usePostsStore } from '@/stores/posts'
 import { postsApi, type PostListItem } from '@/api/posts'
 import { formatDate, parseTags } from '@/composables/useMarkdown'
 import PostCard from '@/components/PostCard.vue'
-import { IconSearch, IconMagnifyingGlass, IconPencil, IconTrash, IconCaretRight, IconClock } from '@phosphor-icons/vue'
+import { PhMagnifyingGlass, PhPencil, PhTrash, PhCaretRight, PhClock } from '@phosphor-icons/vue'
 
 const store = usePostsStore()
 const router = useRouter()
@@ -44,7 +44,7 @@ async function removePost(post: PostListItem) {
     <!-- 搜索与筛选 -->
     <div class="flex flex-wrap items-center gap-4">
       <div class="relative flex-1">
-        <IconSearch size={20} weight="regular" class="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
+        <PhMagnifyingGlass size={20} weight="regular" class="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
         <input
           v-model="searchInput"
           type="search"
@@ -68,13 +68,13 @@ async function removePost(post: PostListItem) {
 
     <!-- 加载中 -->
     <div v-if="store.loading" class="py-20 text-center text-zinc-400">
-      <IconClock size={48} weight="light" class="mx-auto mb-4 text-zinc-300" />
+      <PhClock size={48} weight="light" class="mx-auto mb-4 text-zinc-300" />
       <p>加载中…</p>
     </div>
 
     <!-- 空状态 -->
     <div v-else-if="store.posts.length === 0" class="rounded-2xl border-2 border-dashed border-zinc-200 bg-white py-20 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
-      <IconPencil size={48} weight="light" class="mx-auto mb-4 text-zinc-300" />
+      <PhPencil size={48} weight="light" class="mx-auto mb-4 text-zinc-300" />
       <p class="mb-3 text-zinc-500">还没有文章</p>
       <button
         class="rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white transition-all hover:bg-indigo-700 active:scale-[0.97]"
@@ -92,7 +92,7 @@ async function removePost(post: PostListItem) {
             class="flex items-center gap-1 text-xs text-zinc-400 transition-colors hover:text-indigo-600"
             @click="router.push(`/posts/${post.id}/edit`)"
           >
-            <IconPencil size={14} weight="bold" />
+            <PhPencil size={14} weight="bold" />
             编辑
           </button>
           <button
@@ -100,7 +100,7 @@ async function removePost(post: PostListItem) {
             :disabled="deleting === post.id"
             @click="removePost(post)"
           >
-            <IconTrash size={14} weight="bold" />
+            <PhTrash size={14} weight="bold" />
             {{ deleting === post.id ? '删除中…' : '删除' }}
           </button>
         </template>
@@ -114,7 +114,7 @@ async function removePost(post: PostListItem) {
         :disabled="store.pagination.page <= 1"
         @click="goPage(store.pagination.page - 1)"
       >
-        <IconCaretRight size={16} weight="bold" class="rotate-180" />
+        <PhCaretRight size={16} weight="bold" class="rotate-180" />
         上一页
       </button>
       <span class="text-sm text-zinc-600 dark:text-zinc-400">
@@ -126,7 +126,7 @@ async function removePost(post: PostListItem) {
         @click="goPage(store.pagination.page + 1)"
       >
         下一页
-        <IconCaretRight size={16} weight="bold" />
+        <PhCaretRight size={16} weight="bold" />
       </button>
     </div>
   </div>

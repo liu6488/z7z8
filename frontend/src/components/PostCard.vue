@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PostListItem } from '@/api/posts'
 import { formatDate, parseTags } from '@/composables/useMarkdown'
-import { IconEye, IconPencil, IconTrash, IconCaretRight } from '@phosphor-icons/vue'
+import { PhEye, PhPencil, PhTrash, PhCaretRight } from '@phosphor-icons/vue'
 
 defineProps<{ post: PostListItem }>()
 </script>
@@ -19,7 +19,7 @@ defineProps<{ post: PostListItem }>()
       </span>
       <span>{{ formatDate(post.createdAt) }}</span>
       <span class="flex items-center gap-1">
-        <IconEye size={12} weight="fill" />
+        <PhEye size={12} weight="fill" />
         {{ post.views }}
       </span>
     </div>
@@ -50,7 +50,7 @@ defineProps<{ post: PostListItem }>()
           class="flex items-center gap-1 text-xs font-medium text-indigo-600 transition-colors hover:text-indigo-800"
         >
           阅读全文
-          <IconCaretRight size={14} weight="bold" />
+          <PhCaretRight size={14} weight="bold" />
         </router-link>
       </div>
     </div>

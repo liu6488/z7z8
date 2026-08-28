@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { postsApi, type PostDetail } from '@/api/posts'
 import { renderMarkdown } from '@/composables/useMarkdown'
-import { IconArrowLeft, IconCheck, IconClock, IconFloppyDisk, IconPencil, IconX } from '@phosphor-icons/vue'
+import { PhArrowLeft, PhCheck, PhClock, PhFloppyDisk, PhPencil, PhX } from '@phosphor-icons/vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -92,7 +92,7 @@ async function save(publish?: 'draft' | 'published') {
         class="flex items-center gap-1 text-sm text-zinc-500 transition-colors hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400"
         @click="router.back()"
       >
-        <IconArrowLeft size={18} weight="bold" />
+        <PhArrowLeft size={18} weight="bold" />
         返回
       </button>
     </div>
@@ -137,7 +137,7 @@ async function save(publish?: 'draft' | 'published') {
       <div>
         <div class="mb-2 flex items-center justify-between">
           <label class="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-            <IconPencil size={16} weight="bold" class="mr-1.5" />
+            <PhPencil size={16} weight="bold" class="mr-1.5" />
             Markdown 编辑
           </label>
           <span class="text-xs text-zinc-400">{{ content.length }} 字符</span>
@@ -152,7 +152,7 @@ async function save(publish?: 'draft' | 'published') {
 
       <div>
         <div class="mb-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-          <IconClock size={16} weight="bold" class="mr-1.5" />
+          <PhClock size={16} weight="bold" class="mr-1.5" />
           实时预览
         </div>
         <div class="h-[520px] overflow-y-auto rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
@@ -178,8 +178,8 @@ async function save(publish?: 'draft' | 'published') {
         :disabled="saving"
         @click="save()"
       >
-        <IconCheck size={16} weight="bold" v-if="!saving" />
-        <IconClock size={16} weight="bold" v-else />
+        <PhCheck size={16} weight="bold" v-if="!saving" />
+        <PhClock size={16} weight="bold" v-else />
         {{ saving ? '保存中…' : isEdit ? '保存修改' : '创建文章' }}
       </button>
       <button
@@ -188,7 +188,7 @@ async function save(publish?: 'draft' | 'published') {
         :disabled="saving"
         @click="save('draft')"
       >
-        <IconFloppyDisk size={16} weight="bold" />
+        <PhFloppyDisk size={16} weight="bold" />
         存草稿
       </button>
     </div>

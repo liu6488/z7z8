@@ -1,0 +1,2 @@
+-- 预留: PostgreSQL 初始化脚本 (如需自定义初始角色/扩展可在此编写)
+-- Prisma migrate deploy 会自动完成建表

@@ -66,19 +66,52 @@ INSERT INTO "posts" ("id", "title", "content", "excerpt", "tags", "status", "vie
    '常用 Markdown 语法速查。', '教程,Markdown', 'published', 0)
 ON CONFLICT ("id") DO NOTHING`
 
+function sanitizeUrl(url: string): string {
+  // 脱敏：隐藏连接串中的密码，便于打日志
+  return url.replace(/\/\/[^:@/]+:[^@/]+@/, '//***:***@')
+}
+
 async function bootstrapSchema(): Promise<void> {
+  const started = Date.now()
+  console.log(
+    `[db] bootstrap start (postgres) url=${sanitizeUrl(process.env.DATABASE_URL ?? '')}`,
+  )
   await prisma.$executeRawUnsafe(DDL_POSTS)
+  console.log('[db] bootstrap: posts table OK')
   await prisma.$executeRawUnsafe(DDL_INDEX_1)
   await prisma.$executeRawUnsafe(DDL_INDEX_2)
+  console.log('[db] bootstrap: indexes OK')
   await prisma.$executeRawUnsafe(SEED_SQL)
-  console.log('[db] schema bootstrap OK (postgres)')
+  console.log(`[db] bootstrap OK in ${Date.now() - started}ms`)
+}
+
+function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(
+      () => reject(new Error(`[db] ${label} timed out after ${ms}ms`)),
+      ms,
+    )
+    p.then(
+      (v) => {
+        clearTimeout(timer)
+        resolve(v)
+      },
+      (e) => {
+        clearTimeout(timer)
+        reject(e)
+      },
+    )
+  })
 }
 
 const isPostgres = (process.env.DATABASE_URL ?? '').startsWith('postgres')
 
 export const dbReady: Promise<void> = isPostgres
-  ? bootstrapSchema().catch((e) => {
-      console.error('[db] schema bootstrap failed:', e)
+  ? withTimeout(bootstrapSchema(), 25000, 'bootstrapSchema').catch((e) => {
+      console.error(
+        '[db] schema bootstrap FAILED:',
+        e instanceof Error ? e.message : e,
+      )
       throw e
     })
   : Promise.resolve()

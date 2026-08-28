@@ -3,6 +3,25 @@ import { prisma, dbReady } from '@/lib/db'
 
 const REDIS_ENABLED = process.env.REDIS_ENABLED !== 'false'
 
+function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(
+      () => reject(new Error(`${label} timed out after ${ms}ms`)),
+      ms,
+    )
+    p.then(
+      (v) => {
+        clearTimeout(timer)
+        resolve(v)
+      },
+      (e) => {
+        clearTimeout(timer)
+        reject(e)
+      },
+    )
+  })
+}
+
 async function checkRedis(): Promise<boolean> {
   if (!REDIS_ENABLED) return true
   try {
@@ -34,11 +53,15 @@ export async function GET() {
   }
 
   try {
-    await dbReady // 幂等建表（postgres）——失败则本路由返回 503
-    await prisma.$queryRaw`SELECT 1`
+    // 建表（postgres）与 DB 探活都加超时，避免健康检查请求无限挂起
+    await withTimeout(dbReady, 5000, 'db bootstrap')
+    await withTimeout(prisma.$queryRaw`SELECT 1`, 3000, 'db ping')
     checks.database = true
   } catch (e) {
-    console.error('Database health check failed:', e)
+    console.error(
+      'Database health check failed:',
+      e instanceof Error ? e.message : e,
+    )
   }
 
   if (REDIS_ENABLED) {
